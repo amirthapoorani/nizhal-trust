@@ -1,0 +1,732 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Nizhal Trust — Shade for Every Village</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,400;0,9..144,600;0,9..144,700;1,9..144,500&family=Work+Sans:wght@400;500;600;700&display=swap">
+<style>
+  :root{
+    --green:#1F3D2B; --green-dark:#142A1D; --turmeric:#E3A33C;
+    --parchment:#F6F0E4; --parchment-deep:#EDE3CE; --maroon:#7A2E2E;
+    --ink:#26231D; --ink-soft:#4A463C; --white:#FFFDF9; --radius:4px;
+  }
+  *{box-sizing:border-box;}
+  html{scroll-behavior:smooth;}
+  @media (prefers-reduced-motion:reduce){html{scroll-behavior:auto;} *{animation-duration:.01ms!important;transition-duration:.01ms!important;}}
+  body{margin:0;font-family:'Work Sans',sans-serif;color:var(--ink);background:var(--parchment);line-height:1.6;}
+  h1,h2,h3,h4{font-family:'Fraunces',serif;color:var(--green-dark);margin:0 0 .4em;line-height:1.15;font-weight:600;}
+  h1{font-size:clamp(2.3rem,5vw,3.8rem);font-weight:700;}
+  h2{font-size:clamp(1.6rem,3vw,2.2rem);}
+  p{margin:0 0 1em;color:var(--ink-soft);}
+  a{color:inherit;text-decoration:none;}
+  .wrap{max-width:1080px;margin:0 auto;padding:0 28px;}
+  .eyebrow{font-size:.76rem;letter-spacing:.14em;text-transform:uppercase;color:var(--maroon);font-weight:600;display:inline-block;margin-bottom:.7em;}
+  .btn{display:inline-block;background:var(--maroon);color:var(--white)!important;padding:12px 26px;border-radius:var(--radius);font-weight:600;font-size:.92rem;border:1px solid var(--maroon);cursor:pointer;transition:background .2s,transform .15s;}
+  .btn:hover{background:#611f1f;transform:translateY(-1px);}
+  .btn-outline{background:transparent;border:1px solid var(--green-dark);color:var(--green-dark)!important;}
+  .btn-outline:hover{background:var(--green-dark);color:#fff!important;}
+  .btn:focus-visible,a:focus-visible,button:focus-visible,input:focus-visible,textarea:focus-visible,select:focus-visible{outline:3px solid var(--turmeric);outline-offset:2px;}
+
+  /* ---- top bar ---- */
+  .topbar{position:fixed;top:0;left:0;right:0;z-index:60;background:rgba(246,240,228,.92);backdrop-filter:blur(6px);border-bottom:1px solid rgba(31,61,43,.12);}
+  .topbar .wrap{display:flex;align-items:center;justify-content:space-between;padding:14px 28px;}
+  .brand{display:flex;align-items:center;gap:9px;font-family:'Fraunces',serif;font-weight:700;font-size:1.2rem;color:var(--green-dark);}
+  .brand svg{width:26px;height:26px;}
+  .topbar nav{display:flex;gap:22px;}
+  .topbar nav a{font-size:.85rem;font-weight:600;color:var(--ink-soft);}
+  .topbar nav a:hover{color:var(--maroon);}
+
+  /* ---- side dot nav (unique nav pattern for single-page scroll) ---- */
+  .dotnav{position:fixed;right:26px;top:50%;transform:translateY(-50%);z-index:55;display:flex;flex-direction:column;gap:16px;}
+  .dotnav a{width:10px;height:10px;border-radius:50%;background:rgba(31,61,43,.25);display:block;position:relative;transition:background .2s;}
+  .dotnav a.active{background:var(--maroon);}
+  .dotnav a span{position:absolute;right:20px;top:50%;transform:translateY(-50%);white-space:nowrap;font-size:.72rem;font-weight:600;color:var(--green-dark);background:var(--white);padding:3px 9px;border-radius:3px;opacity:0;pointer-events:none;transition:opacity .15s;box-shadow:0 2px 6px rgba(0,0,0,.08);}
+  .dotnav a:hover span{opacity:1;}
+  @media (max-width:900px){.dotnav{display:none;} .topbar nav{display:none;}}
+
+  /* ---- hero: asymmetric editorial ---- */
+  .hero{padding:150px 0 70px;background:var(--green);color:var(--white);position:relative;overflow:hidden;}
+  .hero .wrap{display:grid;grid-template-columns:1.15fr .85fr;gap:36px;align-items:end;}
+  .hero h1{color:#fff;}
+  .hero .eyebrow{color:var(--turmeric);}
+  .hero p.lead{color:#DCE6DC;font-size:1.08rem;max-width:46ch;}
+  .hero-actions{display:flex;gap:14px;margin-top:1.5em;flex-wrap:wrap;}
+  .hero-tree{width:100%;height:auto;}
+  .stat-strip{display:grid;grid-template-columns:repeat(3,1fr);border-top:1px solid rgba(255,255,255,.18);margin-top:56px;}
+  .stat-strip div{padding:24px 0;border-right:1px solid rgba(255,255,255,.18);}
+  .stat-strip div:last-child{border-right:none;}
+  .stat-strip .num{font-family:'Fraunces',serif;font-size:2rem;font-weight:700;color:var(--turmeric);}
+  .stat-strip .label{font-size:.8rem;color:#C9D6C9;text-transform:uppercase;letter-spacing:.05em;}
+  @media (max-width:900px){.hero .wrap{grid-template-columns:1fr;} .hero-tree{max-width:220px;margin:0 auto;} .stat-strip{grid-template-columns:1fr;} .stat-strip div{border-right:none;border-bottom:1px solid rgba(255,255,255,.18);}}
+
+  section{padding:80px 0;scroll-margin-top:80px;}
+  .section-alt{background:var(--parchment-deep);}
+  .section-dark{background:var(--green-dark);color:#fff;}
+  .section-dark h2,.section-dark h3{color:#fff;}
+  .section-dark p{color:#C9D6C9;}
+  .section-dark .eyebrow{color:var(--turmeric);}
+  .section-head{max-width:620px;margin-bottom:40px;}
+
+  .grid-3{display:grid;grid-template-columns:repeat(3,1fr);gap:24px;}
+  .grid-2{display:grid;grid-template-columns:1fr 1fr;gap:40px;}
+  @media (max-width:860px){.grid-3,.grid-2{grid-template-columns:1fr;}}
+  .card{background:var(--white);border:1px solid rgba(31,61,43,.12);border-radius:var(--radius);padding:28px;}
+  .card .mark{font-family:'Fraunces',serif;font-size:.82rem;color:var(--turmeric);font-weight:700;letter-spacing:.05em;display:block;margin-bottom:8px;}
+
+  .timeline{border-left:2px solid var(--turmeric);margin-left:8px;}
+  .timeline-item{position:relative;padding:0 0 34px 28px;}
+  .timeline-item::before{content:'';position:absolute;left:-6px;top:4px;width:11px;height:11px;background:var(--maroon);border-radius:50%;border:2px solid var(--parchment-deep);}
+  .timeline-item .yr{font-family:'Fraunces',serif;font-weight:700;color:var(--green-dark);}
+
+  .progress-track{background:rgba(31,61,43,.12);border-radius:20px;height:9px;overflow:hidden;margin:8px 0 4px;}
+  .progress-fill{background:var(--turmeric);height:100%;border-radius:20px;}
+
+  form.card label{display:block;font-size:.83rem;font-weight:600;color:var(--green-dark);margin:14px 0 5px;}
+  form.card label:first-of-type{margin-top:0;}
+  form.card input,form.card select,form.card textarea{width:100%;padding:10px 12px;border:1px solid rgba(31,61,43,.25);border-radius:var(--radius);font-family:'Work Sans',sans-serif;font-size:.92rem;background:#fff;color:var(--ink);}
+  .amount-row{display:flex;gap:8px;flex-wrap:wrap;margin-top:6px;}
+  .amount-chip{padding:9px 16px;border:1px solid rgba(31,61,43,.3);border-radius:30px;background:#fff;cursor:pointer;font-weight:600;font-size:.86rem;transition:all .15s;}
+  .amount-chip.selected,.amount-chip:hover{background:var(--maroon);color:#fff;border-color:var(--maroon);}
+  .form-note{font-size:.8rem;color:var(--ink-soft);margin-top:12px;}
+  .form-success{display:none;background:#EAF3EA;border:1px solid var(--green);color:var(--green-dark);padding:14px;border-radius:var(--radius);margin-top:16px;font-weight:500;font-size:.9rem;}
+  .form-error{display:none;background:#F6E4E4;border:1px solid var(--maroon);color:var(--maroon);padding:14px;border-radius:var(--radius);margin-top:16px;font-weight:500;font-size:.9rem;}
+
+  .quote-block{border-left:3px solid var(--turmeric);padding-left:24px;font-family:'Fraunces',serif;font-style:italic;font-size:1.25rem;color:var(--green-dark);max-width:58ch;}
+  .quote-block cite{display:block;font-family:'Work Sans',sans-serif;font-style:normal;font-size:.82rem;margin-top:12px;color:var(--ink-soft);}
+
+  .tag-list{display:flex;gap:8px;flex-wrap:wrap;margin-top:8px;}
+  .tag{background:var(--parchment-deep);border:1px solid rgba(31,61,43,.15);padding:4px 12px;border-radius:20px;font-size:.75rem;font-weight:600;color:var(--green-dark);}
+
+  footer{background:var(--green-dark);color:#C9D6C9;padding:50px 0 24px;}
+  .footer-grid{display:grid;grid-template-columns:1.4fr 1fr 1fr 1fr;gap:26px;margin-bottom:36px;}
+  .footer-grid h4{color:#fff;font-size:.85rem;text-transform:uppercase;letter-spacing:.05em;margin-bottom:12px;}
+  .footer-grid a{color:#C9D6C9;display:block;margin-bottom:7px;font-size:.88rem;}
+  .footer-grid a:hover{color:var(--turmeric);}
+  .footer-brand{color:#fff;font-family:'Fraunces',serif;font-size:1.1rem;font-weight:700;margin-bottom:8px;}
+  .footer-bottom{border-top:1px solid rgba(255,255,255,.12);padding-top:20px;font-size:.78rem;display:flex;justify-content:space-between;flex-wrap:wrap;gap:8px;}
+  @media (max-width:860px){.footer-grid{grid-template-columns:1fr;}}
+
+  /* ---------------- CHATBOT WIDGET ---------------- */
+  .chat-toggle{position:fixed;bottom:24px;right:24px;z-index:80;width:60px;height:60px;border-radius:50%;background:var(--maroon);border:none;cursor:pointer;box-shadow:0 8px 20px rgba(0,0,0,.25);display:flex;align-items:center;justify-content:center;transition:transform .2s;}
+  .chat-toggle:hover{transform:scale(1.06);}
+  .chat-toggle svg{width:26px;height:26px;}
+  .chat-badge{position:absolute;top:-4px;right:-4px;background:var(--turmeric);color:var(--green-dark);font-size:.68rem;font-weight:700;width:20px;height:20px;border-radius:50%;display:flex;align-items:center;justify-content:center;border:2px solid var(--parchment);}
+
+  .chat-panel{position:fixed;bottom:96px;right:24px;z-index:80;width:360px;max-width:calc(100vw - 32px);max-height:70vh;background:var(--white);border:1px solid rgba(31,61,43,.18);border-radius:10px;box-shadow:0 16px 40px rgba(0,0,0,.22);display:none;flex-direction:column;overflow:hidden;}
+  .chat-panel.open{display:flex;}
+  .chat-head{background:var(--green);color:#fff;padding:16px 18px;display:flex;align-items:center;gap:10px;}
+  .chat-head svg{width:24px;height:24px;flex-shrink:0;}
+  .chat-head .t{flex:1;}
+  .chat-head .t strong{display:block;font-family:'Fraunces',serif;font-size:1rem;}
+  .chat-head .t span{font-size:.72rem;color:#C9D6C9;}
+  .chat-close{background:none;border:none;color:#DCE6DC;cursor:pointer;font-size:1.1rem;line-height:1;padding:4px;}
+
+  .chat-body{flex:1;overflow-y:auto;padding:16px;background:repeating-linear-gradient(180deg,var(--parchment),var(--parchment) 100%);display:flex;flex-direction:column;gap:10px;}
+  .msg{max-width:85%;padding:10px 13px;border-radius:10px;font-size:.87rem;line-height:1.45;}
+  .msg.bot{background:var(--parchment-deep);color:var(--ink);align-self:flex-start;border-bottom-left-radius:2px;}
+  .msg.user{background:var(--maroon);color:#fff;align-self:flex-end;border-bottom-right-radius:2px;}
+  .chip-row{display:flex;flex-wrap:wrap;gap:6px;margin-top:2px;}
+  .sugg-chip{background:#fff;border:1px solid rgba(31,61,43,.25);color:var(--green-dark);font-size:.76rem;font-weight:600;padding:6px 11px;border-radius:16px;cursor:pointer;transition:all .15s;}
+  .sugg-chip:hover{background:var(--turmeric);border-color:var(--turmeric);color:var(--green-dark);}
+  .typing{align-self:flex-start;display:flex;gap:4px;padding:10px 13px;}
+  .typing span{width:6px;height:6px;background:var(--ink-soft);border-radius:50%;opacity:.4;animation:blink 1.2s infinite;}
+  .typing span:nth-child(2){animation-delay:.2s;}
+  .typing span:nth-child(3){animation-delay:.4s;}
+  @keyframes blink{0%,80%,100%{opacity:.3;}40%{opacity:1;}}
+
+  .chat-input-row{border-top:1px solid rgba(31,61,43,.12);padding:10px;display:flex;gap:8px;background:#fff;}
+  .chat-input-row input{flex:1;border:1px solid rgba(31,61,43,.25);border-radius:20px;padding:9px 14px;font-size:.88rem;font-family:'Work Sans',sans-serif;}
+  .chat-input-row button{background:var(--maroon);border:none;color:#fff;width:38px;height:38px;border-radius:50%;cursor:pointer;display:flex;align-items:center;justify-content:center;flex-shrink:0;}
+  .chat-input-row button:hover{background:#611f1f;}
+
+  /* ---- growth & impact chart ---- */
+  .growth-chart-card{
+    background:var(--white);
+    border:1px solid rgba(31,61,43,.12);
+    border-radius:var(--radius);
+    padding:28px;
+    box-shadow:0 8px 24px rgba(31,61,43,.06);
+  }
+  .chart-wrap{
+    position:relative;
+    width:100%;
+    height:380px;
+  }
+  .chart-note{
+    margin-top:14px;
+    font-size:.78rem;
+    color:var(--ink-soft);
+  }
+  .impact-mini-grid{
+    display:grid;
+    grid-template-columns:repeat(3,1fr);
+    gap:14px;
+    margin-top:20px;
+  }
+  .impact-mini{
+    background:var(--parchment);
+    border:1px solid rgba(31,61,43,.1);
+    padding:16px;
+    border-radius:var(--radius);
+  }
+  .impact-mini strong{
+    display:block;
+    font-family:'Fraunces',serif;
+    font-size:1.5rem;
+    color:var(--green-dark);
+  }
+  .impact-mini span{
+    font-size:.76rem;
+    color:var(--ink-soft);
+  }
+  @media (max-width:700px){
+    .chart-wrap{height:300px;}
+    .impact-mini-grid{grid-template-columns:1fr;}
+    .growth-chart-card{padding:18px;}
+  }
+
+</style>
+</head>
+<body>
+
+<div class="topbar">
+  <div class="wrap">
+    <a href="#home" class="brand">
+      <svg viewBox="0 0 40 40" fill="none"><circle cx="20" cy="14" r="10" fill="#1F3D2B"/><path d="M12 22V34M16 22V36M20 22V38M24 22V36M28 22V34" stroke="#E3A33C" stroke-width="1.6" stroke-linecap="round"/></svg>
+      Nizhal Trust
+    </a>
+    <nav>
+      <a href="#about">About</a>
+      <a href="#programs">Programs</a>
+      <a href="#growth">Growth</a>
+      <a href="#donate">Donate</a>
+      <a href="#contact">Contact</a>
+    </nav>
+  </div>
+</div>
+
+<div class="dotnav" id="dotnav">
+  <a href="#home" data-label="Home" class="active"><span>Home</span></a>
+  <a href="#about" data-label="About"><span>About</span></a>
+  <a href="#programs" data-label="Programs"><span>Programs</span></a>
+  <a href="#growth" data-label="Growth"><span>Growth</span></a>
+  <a href="#donate" data-label="Donate"><span>Donate</span></a>
+  <a href="#contact" data-label="Contact"><span>Contact</span></a>
+</div>
+
+<section id="home" class="hero">
+  <div class="wrap">
+    <div>
+      <span class="eyebrow">Rural Tamil Nadu · Since 2014</span>
+      <h1>Every village needs its shade tree.</h1>
+      <p class="lead">Nizhal Trust works alongside rural communities in Tamil Nadu on education, clean water and public health — the way a banyan's shade gathers a village, not the way charity hands things down.</p>
+      <div class="hero-actions">
+        <a href="#donate" class="btn">Support the work</a>
+        <a href="#programs" class="btn btn-outline" style="border-color:#DCE6DC;color:#fff!important;">See our programs</a>
+      </div>
+    </div>
+    <svg class="hero-tree" viewBox="0 0 320 340" fill="none">
+      <ellipse cx="160" cy="90" rx="120" ry="80" fill="#28492F"/>
+      <ellipse cx="90" cy="70" rx="60" ry="46" fill="#28492F"/>
+      <ellipse cx="230" cy="75" rx="65" ry="50" fill="#28492F"/>
+      <ellipse cx="160" cy="55" rx="70" ry="42" fill="#2F5738"/>
+      <g stroke="#E3A33C" stroke-width="2.2" stroke-linecap="round" opacity="0.85">
+        <path d="M110 130 Q108 220 100 300"/><path d="M140 140 Q142 230 138 305"/>
+        <path d="M170 145 Q170 235 170 308"/><path d="M200 138 Q202 228 208 303"/>
+        <path d="M230 128 Q235 218 244 298"/><path d="M80 120 Q70 210 55 295"/>
+        <path d="M255 115 Q268 205 285 292"/>
+      </g>
+      <line x1="30" y1="312" x2="290" y2="312" stroke="#DCE6DC" stroke-width="2" opacity="0.4"/>
+    </svg>
+  </div>
+  <div class="stat-strip wrap">
+    <div><div class="num">46</div><div class="label">Villages reached</div></div>
+    <div><div class="num">12,800+</div><div class="label">Lives touched</div></div>
+    <div><div class="num">11</div><div class="label">Years of work</div></div>
+  </div>
+</section>
+
+<section id="about">
+  <div class="wrap">
+    <div class="grid-2">
+      <div>
+        <span class="eyebrow">Origin</span>
+        <h2>2014, Thiruvarur</h2>
+        <p>Nizhal Trust began when a small group of engineering graduates returned to their home district and found the village well running dry for the second summer running. They stayed six months, understood why the recharge had failed, and rebuilt it with the villagers themselves.</p>
+        <p>That decision — stay long enough to understand, then build with, not for — became our founding principle.</p>
+      </div>
+      <div>
+        <span class="eyebrow">Mission</span>
+        <h2>What we're here to do</h2>
+        <p>To work alongside rural Tamil Nadu communities so education, water and health stop depending on whether an NGO happens to be around — and start belonging to the village itself.</p>
+        <div class="tag-list">
+          <span class="tag">Community-led</span><span class="tag">Locally staffed</span>
+          <span class="tag">Long-term presence</span><span class="tag">Transparent finances</span>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="section-alt">
+  <div class="wrap">
+    <div class="section-head">
+      <span class="eyebrow">Journey</span>
+      <h2>Eleven years, one village at a time</h2>
+    </div>
+    <div class="timeline">
+      <div class="timeline-item"><div class="yr">2014</div><p>First borewell recharge project in Needamangalam block — the trust's founding work.</p></div>
+      <div class="timeline-item"><div class="yr">2016</div><p>First after-school learning centre opens, run by local youth volunteers.</p></div>
+      <div class="timeline-item"><div class="yr">2019</div><p>Public health camps begin, in partnership with a district government hospital.</p></div>
+      <div class="timeline-item"><div class="yr">2022</div><p>Reach crosses 30 villages; trust registers as a formal charitable organisation.</p></div>
+      <div class="timeline-item"><div class="yr">2026</div><p>46 villages, three districts, and village-level committees running programmes independently.</p></div>
+    </div>
+  </div>
+</section>
+
+<section id="programs">
+  <div class="wrap">
+    <div class="section-head">
+      <span class="eyebrow">What we do</span>
+      <h2>Three roots, one canopy</h2>
+      <p>We work in the areas villages tell us matter most.</p>
+    </div>
+    <div class="grid-3">
+      <div class="card"><span class="mark">Root 01</span><h3>Kalvi Kudil</h3><p>24 after-school learning centres, library corners, and scholarships for first-generation learners.</p></div>
+      <div class="card"><span class="mark">Root 02</span><h3>Neer Payanam</h3><p>Borewell rehabilitation, rainwater harvesting, and water-testing camps run with local volunteers.</p></div>
+      <div class="card"><span class="mark">Root 03</span><h3>Nalam Kaakum</h3><p>Monthly health camps, maternal care support, and nutrition programme for children under six.</p></div>
+    </div>
+  </div>
+</section>
+
+
+<section id="growth" class="section-alt">
+  <div class="wrap">
+    <div class="section-head">
+      <span class="eyebrow">Growth &amp; Impact</span>
+      <h2>Growing from one village to 46</h2>
+      <p>
+        Our journey has expanded from the first village project in 2014
+        to 46 villages across three districts in 2026.
+      </p>
+    </div>
+
+    <div class="growth-chart-card">
+      <div class="chart-wrap">
+        <canvas id="growthChart" aria-label="Nizhal Trust village growth chart"></canvas>
+      </div>
+
+      <div class="impact-mini-grid">
+        <div class="impact-mini">
+          <strong>46</strong>
+          <span>Villages reached in 2026</span>
+        </div>
+        <div class="impact-mini">
+          <strong>12,800+</strong>
+          <span>Lives touched</span>
+        </div>
+        <div class="impact-mini">
+          <strong>24</strong>
+          <span>After-school learning centres</span>
+        </div>
+      </div>
+
+      <p class="chart-note">
+        The chart uses the milestone figures stated on this website:
+        first village project in 2014, 30 villages in 2022, and 46 villages in 2026.
+      </p>
+    </div>
+  </div>
+</section>
+
+<section class="section-alt">
+  <div class="wrap grid-2" style="align-items:center;">
+    <div>
+      <span class="eyebrow">In their words</span>
+      <div class="quote-block">"Nizhal came when our borewell dried up in 2019. Today my daughter walks to a real reading centre instead of two hours to fetch water."<cite>— Kalaivani, Thiruvarur district</cite></div>
+    </div>
+    <div>
+      <h3>Why "Nizhal"?</h3>
+      <p>In Tamil, nizhal means shade — the cool, shared ground under a banyan where a whole village gathers to talk, rest and decide together. We don't arrive with answers; we sit in the shade the village already trusts, and build from there.</p>
+    </div>
+  </div>
+</section>
+
+<section id="donate">
+  <div class="wrap grid-2" style="align-items:start;">
+    <div>
+      <span class="eyebrow">This year's progress</span>
+      <h2>₹18.4L raised of ₹25L goal</h2>
+      <div class="progress-track"><div class="progress-fill" style="width:74%;"></div></div>
+      <p style="font-size:.85rem;">74% funded for this year's programme budget</p>
+      <div class="card" style="margin:22px 0 14px;"><strong>Education — Kalvi Kudil</strong><div class="progress-track"><div class="progress-fill" style="width:80%;background:var(--green);"></div></div><p style="margin:6px 0 0;font-size:.83rem;">₹6.2L of ₹7.75L</p></div>
+      <div class="card" style="margin-bottom:14px;"><strong>Water — Neer Payanam</strong><div class="progress-track"><div class="progress-fill" style="width:68%;"></div></div><p style="margin:6px 0 0;font-size:.83rem;">₹5.9L of ₹8.7L</p></div>
+      <div class="card"><strong>Health — Nalam Kaakum</strong><div class="progress-track"><div class="progress-fill" style="width:71%;background:var(--green);"></div></div><p style="margin:6px 0 0;font-size:.83rem;">₹6.3L of ₹8.55L</p></div>
+    </div>
+
+    <form class="card" id="donateForm">
+      <h3 style="margin-top:0;">Make a donation</h3>
+      <p style="font-size:.83rem;margin-bottom:0;">Demo form — payments are simulated by the Flask backend, nothing is charged.</p>
+      <label for="amt">Choose an amount (₹)</label>
+      <div class="amount-row">
+        <div class="amount-chip" data-amount="500">₹500</div>
+        <div class="amount-chip selected" data-amount="1500">₹1,500</div>
+        <div class="amount-chip" data-amount="5000">₹5,000</div>
+        <div class="amount-chip" data-amount="10000">₹10,000</div>
+      </div>
+      <input type="number" id="donateAmount" value="1500" min="100" style="margin-top:10px;">
+      <label for="donateProgram">Direct my gift to</label>
+      <select id="donateProgram">
+        <option>Wherever it's needed most</option>
+        <option>Education — Kalvi Kudil</option>
+        <option>Clean Water — Neer Payanam</option>
+        <option>Health — Nalam Kaakum</option>
+      </select>
+      <label for="donateName">Full name</label>
+      <input type="text" id="donateName" placeholder="Your name" required>
+      <label for="donateEmail">Email</label>
+      <input type="email" id="donateEmail" placeholder="you@example.com" required>
+      <button type="submit" class="btn" style="width:100%;margin-top:18px;">Donate now</button>
+      <p class="form-note">Registered under the Indian Trusts Act. Donations may be eligible for tax benefits under Section 80G.</p>
+      <div class="form-success" id="donateSuccess"></div>
+      <div class="form-error" id="donateError"></div>
+    </form>
+  </div>
+</section>
+
+<section id="contact" class="section-dark">
+  <div class="wrap grid-2" style="align-items:start;">
+    <form class="card" id="contactForm" style="background:#fff;">
+      <h3 style="margin-top:0;color:var(--green-dark);">Send us a message</h3>
+      <label for="cName">Full name</label>
+      <input type="text" id="cName" placeholder="Your name" required>
+      <label for="cEmail">Email</label>
+      <input type="email" id="cEmail" placeholder="you@example.com" required>
+      <label for="cReason">I'm reaching out about</label>
+      <select id="cReason">
+        <option>Volunteering</option><option>Partnership / CSR</option>
+        <option>Media / press</option><option>General question</option>
+      </select>
+      <label for="cMsg">Message</label>
+      <textarea id="cMsg" rows="4" placeholder="Tell us a bit about what you have in mind..." required></textarea>
+      <button type="submit" class="btn" style="width:100%;margin-top:18px;">Send message</button>
+      <div class="form-success" id="contactSuccess"></div>
+      <div class="form-error" id="contactError"></div>
+    </form>
+    <div>
+      <span class="eyebrow">Reach us</span>
+      <h2>Come sit in the shade with us</h2>
+      <p>Or ask the chat assistant in the corner — it answers common questions about donating, volunteering and our programmes instantly.</p>
+      <div class="card" style="margin-bottom:16px;background:rgba(255,255,255,.05);border-color:rgba(255,255,255,.15);"><strong style="color:#fff;">Office</strong><p style="margin:6px 0 0;">14 Kaveri Street, Thiruvarur, Tamil Nadu 610001</p></div>
+      <div class="card" style="margin-bottom:16px;background:rgba(255,255,255,.05);border-color:rgba(255,255,255,.15);"><strong style="color:#fff;">Email &amp; phone</strong><p style="margin:6px 0 0;">hello@nizhaltrust.org<br>+91 43762 21100</p></div>
+      <div class="card" style="background:rgba(255,255,255,.05);border-color:rgba(255,255,255,.15);"><strong style="color:#fff;">Office hours</strong><p style="margin:6px 0 0;">Mon–Sat, 9:30 AM – 5:30 PM</p></div>
+    </div>
+  </div>
+</section>
+
+<footer>
+  <div class="wrap">
+    <div class="footer-grid">
+      <div><div class="footer-brand">Nizhal Trust</div><p style="color:#C9D6C9;max-width:32ch;">A community-led trust working across rural Tamil Nadu since 2014.</p></div>
+      <div><h4>Explore</h4><a href="#home">Home</a><a href="#about">About</a><a href="#programs">Programs</a></div>
+      <div><h4>Involved</h4><a href="#donate">Donate</a><a href="#contact">Volunteer</a><a href="#contact">Contact us</a></div>
+      <div><h4>Reach us</h4><a href="mailto:hello@nizhaltrust.org">hello@nizhaltrust.org</a><a href="tel:+914376221100">+91 43762 21100</a></div>
+    </div>
+    <div class="footer-bottom"><span>© 2026 Nizhal Trust.</span><span>Built for XENO 2K26 · Zero Hour</span></div>
+  </div>
+</footer>
+
+<!-- ============ CHATBOT WIDGET ============ -->
+<button class="chat-toggle" id="chatToggle" aria-label="Open chat">
+  <svg viewBox="0 0 24 24" fill="none"><path d="M4 4h16v12H8l-4 4V4z" stroke="#fff" stroke-width="1.8" stroke-linejoin="round"/></svg>
+  <span class="chat-badge">?</span>
+</button>
+
+<div class="chat-panel" id="chatPanel">
+  <div class="chat-head">
+    <svg viewBox="0 0 40 40" fill="none"><circle cx="20" cy="14" r="10" fill="#E3A33C"/><path d="M12 22V34M16 22V36M20 22V38M24 22V36M28 22V34" stroke="#fff" stroke-width="1.6" stroke-linecap="round"/></svg>
+    <div class="t"><strong>Ask Nizhal</strong><span>NGO FAQ assistant</span></div>
+    <button class="chat-close" id="chatClose" aria-label="Close chat">✕</button>
+  </div>
+  <div class="chat-body" id="chatBody"></div>
+  <div class="chat-input-row">
+    <input type="text" id="chatInput" placeholder="Ask about donating, volunteering...">
+    <button id="chatSend" aria-label="Send">
+      <svg viewBox="0 0 24 24" fill="none" width="16" height="16"><path d="M3 11l18-8-8 18-2-8-8-2z" fill="#fff"/></svg>
+    </button>
+  </div>
+</div>
+
+
+<!-- Chart.js -->
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+<script>
+/* ---------- NGO growth chart ---------- */
+(function () {
+  var canvas = document.getElementById('growthChart');
+  if (!canvas || typeof Chart === 'undefined') return;
+
+  new Chart(canvas, {
+    type: 'line',
+    data: {
+      labels: ['2014', '2022', '2026'],
+      datasets: [{
+        label: 'Villages reached',
+        data: [1, 30, 46],
+        borderWidth: 3,
+        pointRadius: 5,
+        pointHoverRadius: 7,
+        tension: 0.35,
+        fill: true,
+        backgroundColor: 'rgba(227,163,60,0.16)',
+        borderColor: '#7A2E2E',
+        pointBackgroundColor: '#E3A33C',
+        pointBorderColor: '#7A2E2E',
+        pointBorderWidth: 2
+      }]
+    },
+    options: {
+      responsive: true,
+      maintainAspectRatio: false,
+      interaction: {
+        intersect: false,
+        mode: 'index'
+      },
+      plugins: {
+        legend: {
+          display: true,
+          labels: {
+            font: {
+              family: 'Work Sans',
+              weight: '600'
+            }
+          }
+        },
+        tooltip: {
+          callbacks: {
+            label: function (context) {
+              return ' ' + context.parsed.y + ' villages';
+            }
+          }
+        }
+      },
+      scales: {
+        x: {
+          grid: {
+            display: false
+          },
+          ticks: {
+            font: {
+              family: 'Work Sans'
+            }
+          }
+        },
+        y: {
+          beginAtZero: true,
+          suggestedMax: 50,
+          ticks: {
+            stepSize: 10,
+            font: {
+              family: 'Work Sans'
+            }
+          },
+          title: {
+            display: true,
+            text: 'Villages reached',
+            font: {
+              family: 'Work Sans',
+              weight: '600'
+            }
+          }
+        }
+      }
+    }
+  });
+})();
+</script>
+
+<script>
+/* ---------- scroll spy for dot nav ----------
+(function () {
+  var sections = ['home','about','programs','growth','donate','contact'].map(function(id){return document.getElementById(id);});
+  var dots = document.querySelectorAll('.dotnav a');
+  var obs = new IntersectionObserver(function (entries) {
+    entries.forEach(function (entry) {
+      if (entry.isIntersecting) {
+        dots.forEach(function (d) { d.classList.remove('active'); });
+        var match = document.querySelector('.dotnav a[href="#' + entry.target.id + '"]');
+        if (match) match.classList.add('active');
+      }
+    });
+  }, { threshold: 0.4 });
+  sections.forEach(function (s) { if (s) obs.observe(s); });
+})();
+
+/* ---------- donation amount chips ---------- */
+(function () {
+  var chips = document.querySelectorAll('.amount-chip');
+  var amountInput = document.getElementById('donateAmount');
+  chips.forEach(function (chip) {
+    chip.addEventListener('click', function () {
+      chips.forEach(function (c) { c.classList.remove('selected'); });
+      chip.classList.add('selected');
+      amountInput.value = chip.getAttribute('data-amount');
+    });
+  });
+})();
+
+/* ---------- donate form -> /api/donate ---------- */
+document.getElementById('donateForm').addEventListener('submit', function (e) {
+  e.preventDefault();
+  var success = document.getElementById('donateSuccess');
+  var errorBox = document.getElementById('donateError');
+  success.style.display = 'none'; errorBox.style.display = 'none';
+
+  fetch('/api/donate', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({
+      name: document.getElementById('donateName').value,
+      email: document.getElementById('donateEmail').value,
+      amount: document.getElementById('donateAmount').value,
+      program: document.getElementById('donateProgram').value
+    })
+  })
+  .then(function (r) { return r.json(); })
+  .then(function (data) {
+    if (data.ok) {
+      success.textContent = '✓ ' + data.message;
+      success.style.display = 'block';
+      e.target.reset();
+    } else {
+      errorBox.textContent = data.error || 'Something went wrong.';
+      errorBox.style.display = 'block';
+    }
+  })
+  .catch(function () {
+    errorBox.textContent = 'Could not reach the server. Please try again.';
+    errorBox.style.display = 'block';
+  });
+});
+
+/* ---------- contact form -> /api/contact ---------- */
+document.getElementById('contactForm').addEventListener('submit', function (e) {
+  e.preventDefault();
+  var success = document.getElementById('contactSuccess');
+  var errorBox = document.getElementById('contactError');
+  success.style.display = 'none'; errorBox.style.display = 'none';
+
+  fetch('/api/contact', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({
+      name: document.getElementById('cName').value,
+      email: document.getElementById('cEmail').value,
+      reason: document.getElementById('cReason').value,
+      message: document.getElementById('cMsg').value
+    })
+  })
+  .then(function (r) { return r.json(); })
+  .then(function (data) {
+    if (data.ok) {
+      success.textContent = '✓ ' + data.message;
+      success.style.display = 'block';
+      e.target.reset();
+    } else {
+      errorBox.textContent = data.error || 'Something went wrong.';
+      errorBox.style.display = 'block';
+    }
+  })
+  .catch(function () {
+    errorBox.textContent = 'Could not reach the server. Please try again.';
+    errorBox.style.display = 'block';
+  });
+});
+
+/* ---------- chatbot widget -> /api/chat ---------- */
+(function () {
+  var toggle = document.getElementById('chatToggle');
+  var panel = document.getElementById('chatPanel');
+  var closeBtn = document.getElementById('chatClose');
+  var body = document.getElementById('chatBody');
+  var input = document.getElementById('chatInput');
+  var sendBtn = document.getElementById('chatSend');
+  var opened = false;
+
+  function addMsg(text, who) {
+    var div = document.createElement('div');
+    div.className = 'msg ' + who;
+    div.textContent = text;
+    body.appendChild(div);
+    body.scrollTop = body.scrollHeight;
+    return div;
+  }
+
+  function addSuggestions(list) {
+    if (!list || !list.length) return;
+    var row = document.createElement('div');
+    row.className = 'chip-row';
+    list.forEach(function (q) {
+      var chip = document.createElement('button');
+      chip.className = 'sugg-chip';
+      chip.textContent = q;
+      chip.addEventListener('click', function () { sendMessage(q); });
+      row.appendChild(chip);
+    });
+    body.appendChild(row);
+    body.scrollTop = body.scrollHeight;
+  }
+
+  function showTyping() {
+    var t = document.createElement('div');
+    t.className = 'typing';
+    t.id = 'typingIndicator';
+    t.innerHTML = '<span></span><span></span><span></span>';
+    body.appendChild(t);
+    body.scrollTop = body.scrollHeight;
+  }
+  function hideTyping() {
+    var t = document.getElementById('typingIndicator');
+    if (t) t.remove();
+  }
+
+  function sendMessage(text) {
+    if (!text || !text.trim()) return;
+    addMsg(text, 'user');
+    input.value = '';
+    showTyping();
+
+    fetch('/api/chat', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ message: text })
+    })
+    .then(function (r) { return r.json(); })
+    .then(function (data) {
+      hideTyping();
+      addMsg(data.reply, 'bot');
+      addSuggestions(data.suggestions);
+    })
+    .catch(function () {
+      hideTyping();
+      addMsg('Connection hiccup — please check the Flask server is running and try again.', 'bot');
+    });
+  }
+
+  toggle.addEventListener('click', function () {
+    panel.classList.toggle('open');
+    if (!opened) {
+      opened = true;
+      addMsg("Vanakkam! I'm the Nizhal Trust FAQ assistant. Ask me about donating, volunteering, our programmes, or how to reach us.", 'bot');
+      addSuggestions(['How can I donate?', 'How can I volunteer?', 'What programmes do you run?']);
+    }
+  });
+  closeBtn.addEventListener('click', function () { panel.classList.remove('open'); });
+  sendBtn.addEventListener('click', function () { sendMessage(input.value); });
+  input.addEventListener('keydown', function (e) { if (e.key === 'Enter') sendMessage(input.value); });
+})();
+</script>
+</body>
+</html>
